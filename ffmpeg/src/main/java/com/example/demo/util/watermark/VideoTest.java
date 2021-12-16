@@ -1,6 +1,7 @@
 package com.example.demo.util.watermark;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.demo.util.logs.Logger;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -27,8 +28,7 @@ public class VideoTest {
 
     public static void main(String[] args) {
         VideoTest videoTest = new VideoTest();
-        //videoTest.videoWatermark("D\\\\:/video/logo.png", "D:\\video\\1.mp4", "D:\\video\\output.mp4");
-        // videoTest.videoWatermark(args[0], args[1], args[2]);
+        // videoTest.execMethod("D\\\\:/video/logo.png", "C:\\Users\\Admin\\Desktop\\piantou", "C:\\Users\\Admin\\Desktop\\001");
         videoTest.execMethod(args[0], args[1], args[2]);
     }
 
@@ -134,7 +134,11 @@ public class VideoTest {
                 .append("[watermark];[in][watermark] overlay=main_w-overlay_w-40:32 [out] \" ")
                 .append(outputFile)
                 .append(" -y");
-        return execCommand(builder.toString(), new StringBuilder(), 1);
+        StringBuilder stringBuilder = new StringBuilder();
+        int exitValue = execCommand(builder.toString(), stringBuilder, 1);
+        Logger.info("exec start: " + builder);
+        Logger.info("exec result: " + stringBuilder);
+        return exitValue;
     }
 
     /**
@@ -149,6 +153,8 @@ public class VideoTest {
                 .append(inputPath);
         StringBuilder stringBuilder = new StringBuilder();
         execCommand(builder.toString(), stringBuilder, 2);
+        Logger.info("exec start: " + builder);
+        Logger.info( "exec result: " + stringBuilder);
         JSONObject json = JSONObject.parseObject(stringBuilder.toString());
         VideoInfo videoInfo = JSONObject.toJavaObject(json, VideoInfo.class);
         if (Objects.isNull(videoInfo) || Objects.isNull(videoInfo.getFormat())) {
