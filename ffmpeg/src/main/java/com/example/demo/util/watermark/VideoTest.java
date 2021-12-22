@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.demo.util.logs.Logger;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,6 +43,7 @@ public class VideoTest {
         int successCount = 0;
         int videoSum = inputFiles.size();
         this.printAwait();
+        String printLog = "";
         try {
             for (int i = 0; i < videoSum; i++) {
                 String inputFile = inputFiles.get(i);
@@ -54,17 +56,20 @@ public class VideoTest {
                 }
                 int success = this.videoWatermark(logoPath, inputFile, outputFile, bitRate);
                 if (success == 0) {
-                    this.log = sdf.format(new Date()) + "  " + fileName + " 水印添加成功 ";
+                    printLog = sdf.format(new Date()) + "  " + fileName + " 水印添加成功 ";
                     successCount += 1;
                 } else {
-                    this.log = sdf.format(new Date()) + "  " + fileName + " 水印添加失败 ";
+                    printLog = sdf.format(new Date()) + "  " + fileName + " 水印添加失败 ";
+                }
+                if (i < (videoSum - 1)) {
+                    this.log = printLog;
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
             exit = true;
         }
-        this.log = sdf.format(new Date()) + "  " + successCount + "个成功，" + (videoSum - successCount) + "个失败";
+        this.log = printLog + "\n" + sdf.format(new Date()) + "  " + successCount + "个成功，" + (videoSum - successCount) + "个失败";
         // 执行完毕，退出日志打印
         exit = true;
     }
@@ -92,8 +97,7 @@ public class VideoTest {
                     }
                     if (!"".equals(log)) {
                         System.out.printf("%s", "\r                  ");
-                        System.out.printf("%s", "\r"+log);
-                        System.out.println();
+                        System.out.printf("%s", "\r" + log + "\n");
                         System.out.printf("%s", "正在添加水印");
                         log = "";
                         i = 0;
@@ -136,8 +140,8 @@ public class VideoTest {
                 .append(" -y");
         StringBuilder stringBuilder = new StringBuilder();
         int exitValue = execCommand(builder.toString(), stringBuilder, 1);
-        Logger.info("exec start: " + builder);
-        Logger.info("exec result: " + stringBuilder);
+        Logger.info("exec start: " + builder.toString());
+        Logger.info("exec result: " + stringBuilder.toString());
         return exitValue;
     }
 
@@ -153,8 +157,8 @@ public class VideoTest {
                 .append(inputPath);
         StringBuilder stringBuilder = new StringBuilder();
         execCommand(builder.toString(), stringBuilder, 2);
-        Logger.info("exec start: " + builder);
-        Logger.info( "exec result: " + stringBuilder);
+        Logger.info("exec start: " + builder.toString());
+        Logger.info( "exec result: " + stringBuilder.toString());
         JSONObject json = JSONObject.parseObject(stringBuilder.toString());
         VideoInfo videoInfo = JSONObject.toJavaObject(json, VideoInfo.class);
         if (Objects.isNull(videoInfo) || Objects.isNull(videoInfo.getFormat())) {
@@ -183,10 +187,10 @@ public class VideoTest {
             } else {
                 inputStream = proc.getInputStream();
             }
-            stdout = new BufferedReader(new InputStreamReader(inputStream));
+            stdout = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
             String line;
             while ((line = stdout.readLine()) != null) {
-                outLog.append(line);
+                outLog.append(line).append("\r\n");
             }
         } catch (IOException e) {
             e.printStackTrace();

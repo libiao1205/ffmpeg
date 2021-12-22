@@ -1,7 +1,7 @@
 package com.example.demo.util.logs;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -29,15 +29,15 @@ public class Logger {
 
     private static void writer(String type, String content){
         File file = getFile();
-        FileWriter out = null;
         try {
             // append=true,每次从内容的尾部写入，不会覆写以前的内容
-            out = new FileWriter(file,true);
-            out.write(type + "  " + (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "  :"));
-            out.write(content);
-            out.write("\r\n");
-            out.flush();
-            out.close();
+            FileOutputStream fileOutputStream = new FileOutputStream(file, true);
+            String str = type + "  " + (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "  :");
+            fileOutputStream.write(str.getBytes("GBK"));
+            fileOutputStream.write(content.getBytes("GBK"));
+            fileOutputStream.write("\r\n".getBytes("GBK"));
+            fileOutputStream.flush();
+            fileOutputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
