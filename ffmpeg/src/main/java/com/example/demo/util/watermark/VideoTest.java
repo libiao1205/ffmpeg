@@ -2,6 +2,7 @@ package com.example.demo.util.watermark;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.demo.util.logs.Logger;
+import org.springframework.util.StringUtils;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -29,11 +30,13 @@ public class VideoTest {
 
     public static void main(String[] args) {
         VideoTest videoTest = new VideoTest();
-        // videoTest.execMethod("D\\\\:/video/logo.png", "C:\\Users\\Admin\\Desktop\\piantou", "C:\\Users\\Admin\\Desktop\\001");
-        videoTest.execMethod(args[0], args[1], args[2]);
+        //videoTest.execMethod("D\\\\:/video/logo.png", "D:\\video\\inputPath", "D:\\video\\outputPath", "50", "32");
+        videoTest.execMethod(args[0], args[1], args[2], args[3], args[4]);
     }
 
-    public void execMethod(String logoPath, String inputPath, String outputPath){
+    public void execMethod(String logoPath, String inputPath, String outputPath, String height, String width){
+        int H = StringUtils.isEmpty(height) ? 50 : Integer.parseInt(height);
+        int W = StringUtils.isEmpty(height) ? 32 : Integer.parseInt(width);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         File file = new File(inputPath);
         List<String> inputFiles = new ArrayList<>();
@@ -54,7 +57,7 @@ public class VideoTest {
                     this.log = sdf.format(new Date()) + "  " + fileName + " 水印添加失败 ";
                     continue;
                 }
-                int success = this.videoWatermark(logoPath, inputFile, outputFile, bitRate);
+                int success = this.videoWatermark(logoPath, inputFile, outputFile, bitRate, H, W);
                 if (success == 0) {
                     printLog = sdf.format(new Date()) + "  " + fileName + " 水印添加成功 ";
                     successCount += 1;
@@ -127,7 +130,7 @@ public class VideoTest {
      * @return int 返回结果 0：成功，1：失败
      * @author libiao
      */
-    private int videoWatermark(String logoPath, String inputPath, String outputFile, int bitRate) {
+    private int videoWatermark(String logoPath, String inputPath, String outputFile, int bitRate, int H, int W) {
         StringBuilder builder = new StringBuilder();
         builder.append("ffmpeg -i ")
                 .append(inputPath)
@@ -135,7 +138,7 @@ public class VideoTest {
                 .append(bitRate)
                 .append("k -vf \"movie=")
                 .append(logoPath)
-                .append("[watermark];[in][watermark] overlay=main_w-overlay_w-40:32 [out] \" ")
+                .append("[watermark];[in][watermark] overlay=main_w-overlay_w-"+ H +":"+ W +" [out] \" ")
                 .append(outputFile)
                 .append(" -y");
         StringBuilder stringBuilder = new StringBuilder();
