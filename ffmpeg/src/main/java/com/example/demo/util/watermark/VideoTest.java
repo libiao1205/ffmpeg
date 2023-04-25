@@ -11,6 +11,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import static java.lang.Thread.sleep;
 
 /**
  * @author libiao
@@ -27,6 +32,8 @@ public class VideoTest {
      * 需要打印的日志信息
      */
     private String log = "";
+
+    private final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(1, 1, 1000 * 10, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(1), new ThreadFactoryInfo("customThread-"));
 
     public static void main(String[] args) {
         VideoTest videoTest = new VideoTest();
@@ -81,44 +88,42 @@ public class VideoTest {
      * 打印日志
      */
     private void printAwait(){
-        new Thread() {
-            @Override
-            public void run() {
-                //初始用
-                System.out.printf("%s", "正在添加水印");
-                String str = "";
-                for (int i = 1; i < 8; i++) {
-                    if (exit) {
-                        // \r将光标定位在该行的首个字符
-                        System.out.printf("%s", "\r添加水印结束      ");
-                        break;
-                    }
-                    try {
-                        sleep(200);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    if (!"".equals(log)) {
-                        System.out.printf("%s", "\r                  ");
-                        System.out.printf("%s", "\r" + log + "\n");
-                        System.out.printf("%s", "正在添加水印");
-                        log = "";
-                        i = 0;
-                        str = "";
-                    }
-                    if (i  == 7) {
-                        // \b光标向左移动
-                        str = "\b\b\b\b\b\b";
-                        System.out.printf(str + "%s", "      ");
-                        i = 0;
-                    } else if (i == 1 && !"".equals(str)){
-                        System.out.printf("\b\b\b\b\b\b%s", ".");
-                    } else {
-                        System.out.printf("%s", ".");
-                    }
+        threadPoolExecutor.execute(() -> {
+            //初始用
+            System.out.printf("%s", "正在添加水印");
+            String str = "";
+            for (int i = 1; i < 8; i++) {
+                if (exit) {
+                    // \r将光标定位在该行的首个字符
+                    System.out.printf("%s", "\r添加水印结束      ");
+                    break;
+                }
+                try {
+                    sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (!"".equals(log)) {
+                    System.out.printf("%s", "\r                  ");
+                    System.out.printf("%s", "\r" + log + "\n");
+                    System.out.printf("%s", "正在添加水印");
+                    log = "";
+                    i = 0;
+                    str = "";
+                }
+                if (i  == 7) {
+                    // \b光标向左移动
+                    str = "\b\b\b\b\b\b";
+                    System.out.printf(str + "%s", "      ");
+                    i = 0;
+                } else if (i == 1 && !"".equals(str)){
+                    System.out.printf("\b\b\b\b\b\b%s", ".");
+                } else {
+                    System.out.printf("%s", ".");
                 }
             }
-        }.start();
+        });
+        threadPoolExecutor.shutdown();
     }
 
     /**
@@ -221,14 +226,14 @@ public class VideoTest {
      * @author libiao
      */
     private void method(File file, List<String> inputPaths, List<String> outputPaths, List<String> fileNames, String inputPath, String outputPath) {
-        File[] FList = file.listFiles();
-        for (int i = 0; i < FList.length; i++) {
-            if (FList[i].isDirectory()==true) {
-                method(FList[i], inputPaths, outputPaths, fileNames, inputPath, outputPath);
+        File[] fList = file.listFiles();
+        for (int i = 0; i < Objects.requireNonNull(fList).length; i++) {
+            if (fList[i].isDirectory()) {
+                method(fList[i], inputPaths, outputPaths, fileNames, inputPath, outputPath);
             } else {
-                inputPaths.add(inputPath + "\\" + FList[i].getName());
-                outputPaths.add(outputPath + "\\" + FList[i].getName());
-                fileNames.add(FList[i].getName());
+                inputPaths.add(inputPath + "\\" + fList[i].getName());
+                outputPaths.add(outputPath + "\\" + fList[i].getName());
+                fileNames.add(fList[i].getName());
             }
         }
     }
