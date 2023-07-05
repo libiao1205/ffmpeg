@@ -14,7 +14,12 @@ import java.util.Objects;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.RandomAccessFile;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import static java.lang.Thread.sleep;
 
 /**
@@ -33,12 +38,17 @@ public class VideoTest {
      */
     private String log = "";
 
-    private final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(1, 1, 1000 * 10, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(1), new ThreadFactoryInfo("customThread-"));
+    private final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(10, 15, 1000 * 10, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(1), new ThreadFactoryInfo("customThread-"));
 
     public static void main(String[] args) {
         VideoTest videoTest = new VideoTest();
+        for (int i = 0; i < 5; i++){
+            videoTest.downVideo("https://video-shell.toant.top/video/encode/huiketang/202191/ac7662f/9835e99.mp4", "D:\\video" + i + ".mp4");
+        }
+
         //videoTest.execMethod("D\\\\:/video/logo.png", "D:\\video\\inputPath", "D:\\video\\outputPath", "50", "32");
-        videoTest.execMethod(args[0], args[1], args[2], args[3], args[4]);
+        //videoTest.execMethod(args[0], args[1], args[2], args[3], args[4]);
+
     }
 
     public void execMethod(String logoPath, String inputPath, String outputPath, String height, String width){
@@ -236,5 +246,79 @@ public class VideoTest {
                 fileNames.add(fList[i].getName());
             }
         }
+    }
+
+    /**
+     * 下载视频
+     * @param videoUrl 视频网络地址
+     * @param downloadPath  视频保存地址
+     */
+    public void downVideo(String videoUrl, String downloadPath) {
+        threadPoolExecutor.execute(() -> {
+
+
+        HttpURLConnection connection = null;
+        InputStream inputStream = null;
+        RandomAccessFile randomAccessFile = null;
+        boolean re;
+        try {
+
+            URL url = new URL(videoUrl);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("Range", "bytes=0-");
+            connection.connect();
+            if (connection.getResponseCode() / 100 != 2) {
+                System.out.println("连接失败...");
+                return;
+            }
+            inputStream = connection.getInputStream();
+            int downloaded = 0;
+            int fileSize = connection.getContentLength();
+            randomAccessFile = new RandomAccessFile(downloadPath, "rw");
+            while (downloaded < fileSize) {
+                byte[] buffer = null;
+                if (fileSize - downloaded >= 1000000) {
+                    buffer = new byte[1000000];
+                } else {
+                    buffer = new byte[fileSize - downloaded];
+                }
+                int read = -1;
+                int currentDownload = 0;
+                long startTime = System.currentTimeMillis();
+                while (currentDownload < buffer.length) {
+                    read = inputStream.read();
+                    buffer[currentDownload++] = (byte) read;
+                }
+                long endTime = System.currentTimeMillis();
+                double speed = 0.0;
+                if (endTime - startTime > 0) {
+                    speed = currentDownload / 1024.0 / ((double) (endTime - startTime) / 1000);
+                }
+                randomAccessFile.write(buffer);
+                downloaded += currentDownload;
+                randomAccessFile.seek(downloaded);
+                System.out.printf(downloadPath+"下载了进度:%.2f%%,下载速度：%.1fkb/s(%.1fM/s)%n", downloaded * 1.0 / fileSize * 10000 / 100,
+                        speed, speed / 1000);
+            }
+            re = true;
+            return;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            re = false;
+            return;
+        } catch (IOException e) {
+            e.printStackTrace();
+            re = false;
+            return;
+        } finally {
+            try {
+                connection.disconnect();
+                inputStream.close();
+                randomAccessFile.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        });
     }
 }
