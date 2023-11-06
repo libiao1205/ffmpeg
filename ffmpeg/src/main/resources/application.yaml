@@ -1,13 +1,16 @@
-spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/private_info?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowMultiQueries=true&serverTimezone=Asia/Shanghai
-    username: root
-    password: root123
-  batch:
-    # 自动创建batch相关表
-    initialize-schema: always
-    #是否启动job
-    job:
-      enabled: true
-      names: job
+#spring:
+#  por
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/private_info?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowMultiQueries=true&serverTimezone=Asia/Shanghai
+#    username: root
+#    password: root123
+#  batch:
+#    # 自动创建batch相关表
+#    initialize-schema: always
+#    #是否启动job
+#    job:
+#      enabled: true
+#      names: job
+server:
+  port: 8082
