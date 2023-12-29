@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!--    <script src="https://heerey525.github.io/layui-v2.4.3/layui/layui.js"></script>-->
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+</head>
+<body>
+<!--<button id="user1" onclick="connect()">连接</button>-->
+<input id="link" type="text"/>
+
+<input id="sendMsg" type="text"/>
+<button onclick="send()">发送</button>
+
+<div id="message">
+
+</div>
+</body>
+
+<script type="text/javascript">
+    var username = "aaa";
+    var websocket = null;
+    // function connect() {
+    //判断当前浏览器是否支持WebSocket  ,主要此处要更换为自己的地址
+    if('WebSocket' in window){
+        //后边是订阅的topic名称
+        //websocket = new WebSocket("wss://wss.fastbull.live/websocket/123");
+		websocket = new WebSocket("ws://127.0.0.1:8030/websocket/123");
+    }
+    else{
+        alert('Not support websocket')
+    }
+    //连接发生错误的回调方法
+    websocket.onerror = function(){
+        // setMessageInnerHTML("error");
+    };
+
+    //连接成功建立的回调方法
+    websocket.onopen = function(event){
+        console.log("连接成功！！！")
+        // setMessageInnerHTML("open");
+        $("#link").val("连接成功！！")
+    }
+
+    //连接关闭的回调方法
+    websocket.onclose = function(){
+        // setMessageInnerHTML("close");
+    }
+
+    //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+    // window.onbeforeunload = function(){
+    //     websocket.close();
+    // }
+    //发送消息
+    function send(){
+        //用户名 + 消息
+        var msg = $("#sendMsg").val();
+        websocket.send(msg);
+        // onmessage();
+    }
+
+    //接收到消息的回调方法
+    // function onmessage(){
+    websocket.onmessage = function(event){
+        console.log(event.data)
+        // setMessageInnerHTML(event.data);
+        $("#message").append("<h1>"+ event.data + "</h1>")
+        // }
+    }
+</script>
+</html>

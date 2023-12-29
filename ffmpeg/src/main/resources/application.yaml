@@ -1,4 +1,4 @@
-#spring:
+spring:
 #  por
 #  datasource:
 #    driver-class-name: com.mysql.cj.jdbc.Driver
@@ -12,5 +12,42 @@
 #    job:
 #      enabled: true
 #      names: job
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: group-test1
+      # 批量消费最大消费数量
+      max-poll-records: 1
+      # 是否自动提交消费的下标，防止重复消费（默认true），kafka管理
+      enable-auto-commit: false
+      # earliest 当各分区下有已提交的offset时，从提交的offset开始消费；无提交的offset时，从头开始消费
+      # latest 当各分区下有已提交的offset时，从提交的offset开始消费；无提交的offset时，消费新产生的该分区下的数据
+      # none topic各分区都存在已提交的offset时，从offset后开始消费；只要有一个分区不存在已提交的offset，则抛出异常
+      # auto-offset-reset: earliest
+    listener:
+      # single 单条消费，batch 批量消费
+      type: batch
+      # 手动提交消费的下标，springboot管理，enable-auto-commit=false才有效
+      ack-mode: manual
+    producer:
+      # 当有多条消息发送到同一分区时，生产者会把他们放到同一批次中，该参数指定了同一个批次的内存大小（默认16384，16kb）
+      batch-size: 36768
+      properties:
+        # 提交延时，当生产者消息累计达到batch-size大小或者消息生产后时长达到linger.ms时间，生产者就会把消息提交给kafka，（默认0ms）表示没有延时立即提交
+        linger:
+          ms: 0
+        max:
+          # 生产者能够发送最大消息（默认1M）
+          request:
+            size: 10485760  #20971520
+          # 缓冲区达到限制大小，阻塞时长
+          block:
+            ms: 1000
+      # 0：生产者发送过来的数据，不需要等待数据落盘应答，最不安全，吞吐量最大，不建议使用
+      # 1：生产者发送过来的数据，leader收到数据后应答，消息有丢失的可能，吞吐量一般（默认值）
+      # -1/all：生产者发送过来的数据，leader和is队列里面的所有节点收齐数据后应答，最安全，吞吐量最差
+      acks: 1
+      # 缓冲区大小（默认33554432，32M）
+      buffer-memory: 67108864
 server:
   port: 8082
