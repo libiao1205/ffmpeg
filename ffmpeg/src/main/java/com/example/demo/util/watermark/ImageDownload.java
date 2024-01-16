@@ -107,7 +107,7 @@ public class ImageDownload {
             Cell cell = row.getCell(1);
             String str = "";
 
-            if(!ObjectUtils.isEmpty(cell)){
+            if (!ObjectUtils.isEmpty(cell)) {
                 cell.setCellType(CellType.STRING);
                 if (!StringUtils.isEmpty(cell.getStringCellValue())) {
                     str = cell.getStringCellValue().replace("huiketang.top", "trading.live");

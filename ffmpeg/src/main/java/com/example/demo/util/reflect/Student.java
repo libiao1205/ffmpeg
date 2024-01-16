@@ -3,8 +3,8 @@ package com.example.demo.util.reflect;
 import org.springframework.core.annotation.Order;
 
 /**
- * @author  libiao
- * @date  2023/9/22
+ * @author libiao
+ * @date 2023/9/22
  */
 
 public class Student {

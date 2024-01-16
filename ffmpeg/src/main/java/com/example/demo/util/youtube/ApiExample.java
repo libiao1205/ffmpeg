@@ -33,7 +33,7 @@ import java.util.Collection;
  * @date 2022/4/7
  */
 public class ApiExample {
-    private static final String CLIENT_SECRETS= "client_secret.json";
+    private static final String CLIENT_SECRETS = "client_secret.json";
     private static final Collection<String> SCOPES =
             Arrays.asList("https://www.googleapis.com/auth/youtube.force-ssl");
 
@@ -51,7 +51,7 @@ public class ApiExample {
         String path = ApiExample.class.getClassLoader().getResource(CLIENT_SECRETS).getPath();
         InputStream in = new FileInputStream(path);
         InputStreamReader inputStreamReader = new InputStreamReader(in);
-                GoogleClientSecrets clientSecrets =
+        GoogleClientSecrets clientSecrets =
                 GoogleClientSecrets.load(JSON_FACTORY, inputStreamReader);
         // Build flow and trigger user authorization request.
         GoogleAuthorizationCodeFlow flow =

@@ -12,7 +12,7 @@ import java.net.URLEncoder;
  */
 public class WebRequest {
 
-    private static void setRequestHeader(HttpURLConnection conn){
+    private static void setRequestHeader(HttpURLConnection conn) {
         conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
         conn.setRequestProperty("Accept", "Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/x-shockwave-flash, application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword, */*");
         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");

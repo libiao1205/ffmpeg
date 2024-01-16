@@ -21,14 +21,15 @@ public class Google {
      * Key -> Value
      * 语言     -> 单词表示
      */
-    private static final Map<String,String> LANGUAGE = new HashMap<String,String>();
+    private static final Map<String, String> LANGUAGE = new HashMap<String, String>();
     // 定义互译语言对常数变量，符合google页面相关对译语言对的值
     public static final String LANGPAIR_CN_EN = "zh-CN|en"; // 汉语到英语
-    public static final String LANGPAIR_EN_CN = "en|zh-CN" ; // 英语到汉语
-    public static final String LANGPAIR_EN_JA ="en|ja" ; // 英语到日语
+    public static final String LANGPAIR_EN_CN = "en|zh-CN"; // 英语到汉语
+    public static final String LANGPAIR_EN_JA = "en|ja"; // 英语到日语
     // 定义编码常数
-    public static final String CHARSET_CN = "GBK" ;
-    public static final String CHARSET_JA = "Shift_JIS" ;
+    public static final String CHARSET_CN = "GBK";
+    public static final String CHARSET_JA = "Shift_JIS";
+
     static {
         LANGUAGE.put("阿尔巴尼亚语", "sq");
         LANGUAGE.put("阿拉伯语", "ar");
@@ -114,7 +115,7 @@ public class Google {
     public static String translate(String translateText, String langpair) {
 // text是google翻译页面提交时对于欲翻译文字的变量名
 // langpair是google翻译页面提交时对于采用何种互对语言的变量名
-        String urlstr = "http://translate.google.com/translate_t?text=" + encodeText(translateText)+ "&langpair=zh-CN|en";
+        String urlstr = "http://translate.google.com/translate_t?text=" + encodeText(translateText) + "&langpair=zh-CN|en";
 
         URL url = null;
         try {
@@ -126,12 +127,12 @@ public class Google {
 // System.out.println(url);
         URLConnection connection = null;
         try {
-            connection = (HttpURLConnection)url.openConnection();
+            connection = (HttpURLConnection) url.openConnection();
         } catch (IOException e) {
 // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        connection.setRequestProperty("User-agent" , "IE/9.0" ); // 必须，否则报错，到于FF的怎么写，没做过测试
+        connection.setRequestProperty("User-agent", "IE/9.0"); // 必须，否则报错，到于FF的怎么写，没做过测试
         try {
             connection.connect();
         } catch (IOException e) {
@@ -141,7 +142,7 @@ public class Google {
         String charset = getCharsetFromLangpair(langpair); // 自动获取目标语言的编码
         BufferedReader in = null;
         try {
-            in = new BufferedReader( new InputStreamReader(connection.getInputStream(),charset));
+            in = new BufferedReader(new InputStreamReader(connection.getInputStream(), charset));
         } catch (UnsupportedEncodingException e) {
 // TODO Auto-generated catch block
             e.printStackTrace();
@@ -149,10 +150,10 @@ public class Google {
 // TODO Auto-generated catch block
             e.printStackTrace();
         } // 使用指定编码接收数据
-        String line = null ;
+        String line = null;
         StringBuilder sb = new StringBuilder();
         try {
-            while ((line = in.readLine()) != null ) {
+            while ((line = in.readLine()) != null) {
                 sb.append(line);
             }
         } catch (IOException e) {
@@ -178,12 +179,14 @@ public class Google {
         }
     }
 
-    /** */ /**
+    /** */
+    /**
      * 从获得的源文件中剥取翻译内容
      * 分析google翻译生成的html源码来看
      * 翻译内容被置于
-     和
-     标签之间
+     * 和
+     * 标签之间
+     *
      * @param htmltext 获得的网页源代码
      */
     private static String getContent(String htmltext) {
@@ -191,8 +194,8 @@ public class Google {
         String se = "";
 
 
-        String []info=htmltext.split("</span>")[7].split(">");
+        String[] info = htmltext.split("</span>")[7].split(">");
 
-        return info[info.length-1];
+        return info[info.length - 1];
     }
 }

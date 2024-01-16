@@ -19,8 +19,7 @@ public class VideoJoin {
     public int mergeVideo(String inputPath, String outputFile) {
         // D:\
         StringBuilder builder = new StringBuilder();
-        builder.append("ffmpeg -f concat -safe 0 -i ")
-                .append(inputPath + " ")
+        builder.append("ffmpeg -f concat -safe 0 -i ").append(inputPath).append(" ")
                 .append("-c copy ")
                 .append(outputFile);
         return execCommand(builder.toString());

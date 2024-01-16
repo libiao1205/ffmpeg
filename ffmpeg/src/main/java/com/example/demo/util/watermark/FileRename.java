@@ -30,12 +30,13 @@ public class FileRename {
 
     /**
      * 循环读取文件夹中所有视频路径
-     * @param file 文件
-     * @param inputPaths 拼接视频加水印前的输入地址
+     *
+     * @param file        文件
+     * @param inputPaths  拼接视频加水印前的输入地址
      * @param outputPaths 拼接视频加水印后的输出地址
-     * @param fileNames 视频名称
-     * @param inputPath 视频输入地址
-     * @param outputPath 视频输出地址
+     * @param fileNames   视频名称
+     * @param inputPath   视频输入地址
+     * @param outputPath  视频输出地址
      * @return void
      * @author libiao
      */

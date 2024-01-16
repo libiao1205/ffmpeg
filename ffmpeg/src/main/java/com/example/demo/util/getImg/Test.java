@@ -19,7 +19,7 @@ public class Test {
         Test.fetchFrame();
     }
 
-    public static void fetchFrame(){
+    public static void fetchFrame() {
         String img = System.currentTimeMillis() + ".jpg";
         //储存文件的路径
         File file2 = new File("D:\\video\\3c340d6\\7ae74d3.mp4");
@@ -33,7 +33,7 @@ public class Test {
     }
 
 
-    public static File fetchFrame(File file,File file4)
+    public static File fetchFrame(File file, File file4)
             throws Exception {
         long start = System.currentTimeMillis();
         FFmpegFrameGrabber ff = new FFmpegFrameGrabber(file);
@@ -49,13 +49,13 @@ public class Test {
             }
             i++;
         }
-        int owidth = f.imageWidth ;
-        int oheight = f.imageHeight ;
+        int owidth = f.imageWidth;
+        int oheight = f.imageHeight;
         // 对截取的帧进行等比例缩放
         int width = 800;
         int height = (int) (((double) width / owidth) * oheight);
-        Java2DFrameConverter converter =new Java2DFrameConverter();
-        BufferedImage fecthedImage =converter.getBufferedImage(f);
+        Java2DFrameConverter converter = new Java2DFrameConverter();
+        BufferedImage fecthedImage = converter.getBufferedImage(f);
         BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
         bi.getGraphics().drawImage(fecthedImage.getScaledInstance(width, height, Image.SCALE_SMOOTH),
                 0, 0, null);

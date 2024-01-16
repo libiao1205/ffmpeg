@@ -21,13 +21,13 @@ public class Logger {
     private static File getFile() {
         // String path = Logger.class.getResource("").getPath();
         File file = new File(logPath);
-        if(!file.exists()){
+        if (!file.exists()) {
             file.mkdir();
         }
         return new File(logPath + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".log");
     }
 
-    private static void writer(String type, String content){
+    private static void writer(String type, String content) {
         File file = getFile();
         try {
             // append=true,每次从内容的尾部写入，不会覆写以前的内容
