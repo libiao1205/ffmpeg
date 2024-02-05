@@ -20,6 +20,8 @@ import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static java.lang.Thread.sleep;
 
@@ -39,8 +41,9 @@ public class VideoTest {
      */
     private String log = "";
 
-    private final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(10, 15, 1000 * 10, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(1), new ThreadFactoryInfo("customThread-"));
+    private final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(1, 2, 1000 * 10, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(1), new ThreadFactoryInfo("customThread-"));
 
+    private AtomicLong execSize = new AtomicLong();
     public static void main(String[] args) {
         VideoTest videoTest = new VideoTest();
         /*for (int i = 0; i < 5; i++){
@@ -57,6 +60,7 @@ public class VideoTest {
         int W = StringUtils.isEmpty(height) ? 32 : Integer.parseInt(width);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         File file = new File(inputPath);
+        execSize.addAndGet(file.length());
         List<String> inputFiles = new ArrayList<>();
         List<String> outputFiles = new ArrayList<>();
         List<String> fileNames = new ArrayList<>();

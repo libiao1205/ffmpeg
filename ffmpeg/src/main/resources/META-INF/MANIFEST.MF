@@ -1,3 +1,3 @@
 Manifest-Version: 1.0
-Main-Class: com.example.demo.util.watermark.ImgCompressImg
+Main-Class: com.example.demo.DemoApplication
 

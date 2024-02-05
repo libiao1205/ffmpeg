@@ -49,5 +49,11 @@ spring:
       acks: 1
       # 缓冲区大小（默认33554432，32M）
       buffer-memory: 67108864
+  servlet:
+    multipart:
+      max-request-size: 104857600
+      max-file-size: 104857600
+  mvc:
+    static-path-pattern: /static/**
 server:
   port: 8082

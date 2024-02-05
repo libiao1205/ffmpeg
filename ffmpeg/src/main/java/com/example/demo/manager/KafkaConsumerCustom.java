@@ -12,7 +12,7 @@ import java.util.List;
  * @author libiao
  * @date 2023/12/18
  */
-@Component
+//@Component
 public class KafkaConsumerCustom {
 
     @KafkaListener(topics = {"topic-2"}, groupId = "group-test1")
